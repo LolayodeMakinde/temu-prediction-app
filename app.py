@@ -35,7 +35,7 @@ avg_spending = st.selectbox(
     "Average Spending Amount",
     ["<₦2,000", "₦2,000–4,999", "₦5,000–9,999", "₦10,000–19,999", ">₦20,000"]
 )
-st.write("Kindly tick appropriately as apllicable to you.")
+st.write("Kindly tick appropriately as applicable to you.")
 #Binary numeric features (Yes=1 / No=0)
 binary_features = {
     'Attractive promos/freebies': st.radio("Attractive promos/freebies", ["Yes", "No"]),
@@ -110,5 +110,6 @@ if st.button("Predict Purchase Likelihood"):
     st.subheader("Prediction Result")
     st.write(f"Purchase Likelihood: **{'Yes' if prediction == 1 else 'No'}**")
     st.write(f"Probability of Purchase: **{probability:.2f}**")
+
 
 
