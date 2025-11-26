@@ -1,19 +1,18 @@
-# app.py
 import streamlit as st
 import pandas as pd
 import numpy as np
 import joblib
 
-# --- Load model, scaler, and columns ---
+#Load model, scaler, and columns
 model = joblib.load("temu_rf_model.pkl")
 scaler = joblib.load("scaler.pkl")
 model_columns = joblib.load("model_columns.pkl")  # Columns used in training
 
-# --- Streamlit UI ---
+#Streamlit UI 
 st.title("Temu Purchase Likelihood Prediction App")
 st.write("Fill in the customer details to predict purchase likelihood.")
 
-# --- User Inputs ---
+#User Inputs
 gender = st.selectbox("Gender", ["Male", "Female"])
 age = st.number_input("Age", min_value=10, max_value=100, value=25)
 residence = st.selectbox("Residence sector", ["Urban", "Rural", "Peri Urban"])
@@ -37,7 +36,7 @@ avg_spending = st.selectbox(
     ["<₦2,000", "₦2,000–4,999", "₦5,000–9,999", "₦10,000–19,999", ">₦20,000"]
 )
 
-# --- Binary numeric features (Yes=1 / No=0) ---
+#Binary numeric features (Yes=1 / No=0)
 binary_features = {
     'Attractive promos/freebies': st.radio("Attractive promos/freebies", ["Yes", "No"]),
     'Better deals than Jumia/Konga': st.radio("Better deals than Jumia/Konga", ["Yes", "No"]),
@@ -64,10 +63,10 @@ binary_features = {
     'Product safety/quality': st.radio("Product safety/quality", ["Yes", "No"])
 }
 
-# --- Prediction button ---
+#Prediction button
 if st.button("Predict Purchase Likelihood"):
 
-    # --- Combine all features into one DataFrame ---
+    #Features DataFrame 
     input_data = {
         'Age': age,
         'Gender': gender,
@@ -81,33 +80,34 @@ if st.button("Predict Purchase Likelihood"):
         'Average Spending Amount': avg_spending
     }
 
-    # Add binary Yes/No features
+    #Binary Yes/No features
     for key, value in binary_features.items():
         input_data[key] = 1 if value == "Yes" else 0
 
-    # Convert to DataFrame
+    #Converting to DataFrame
     input_df = pd.DataFrame([input_data])
 
-    # --- One-hot encode categorical variables that exist in model_columns ---
+    #One-hot encode categorical variables in the model_columns
     input_df_encoded = pd.get_dummies(input_df)
 
-    # --- Ensure all model columns exist in input_df_encoded ---
+    #input_df_encoded
     for col in model_columns:
         if col not in input_df_encoded.columns:
             input_df_encoded[col] = 0
 
-    # Reorder columns to match model
+    #Column Reordering
     input_df_encoded = input_df_encoded[model_columns]
 
-    # --- Scale numeric features safely ---
+    #Numeric Scaling
     numeric_cols = scaler.feature_names_in_
     input_df_encoded[numeric_cols] = scaler.transform(input_df_encoded[numeric_cols])
 
-    # --- Make prediction ---
+    #Prediction
     prediction = model.predict(input_df_encoded)[0]
     probability = model.predict_proba(input_df_encoded)[0][1]
 
-    # --- Display results ---
+    #Results
     st.subheader("Prediction Result")
     st.write(f"Purchase Likelihood: **{'Yes' if prediction == 1 else 'No'}**")
     st.write(f"Probability of Purchase: **{probability:.2f}**")
+
