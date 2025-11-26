@@ -10,11 +10,11 @@ model_columns = joblib.load("model_columns.pkl")  # Columns used in training
 
 #Streamlit UI 
 st.title("Temu Purchase Likelihood Prediction App")
-st.write("Fill in the customer details to predict purchase likelihood.")
+st.write("Kindly fill in your details to predict Temu purchase likelihood.")
 
 #User Inputs
 gender = st.selectbox("Gender", ["Male", "Female"])
-age = st.number_input("Age", min_value=10, max_value=100, value=25)
+age = st.number_input("Age", min_value=10, max_value=100, value=10)
 residence = st.selectbox("Residence sector", ["Urban", "Rural", "Peri Urban"])
 qualification = st.selectbox(
     "Qualification", 
@@ -26,7 +26,7 @@ monthly_income = st.selectbox(
 )
 recent_platform = st.selectbox(
     "Recent online purchase platform",
-    ["Jumia", "Konga", "Jiji", "Physical store (with online payment)", "Social media seller", "Temu"]
+    ["Jumia", "Konga", "Temu", "Jiji", "Physical store (with online payment)", "Social media seller"]
 )
 temu_awareness = st.selectbox("Temu Awareness", ["Yes", "No"])
 temu_purchased = st.selectbox("Temu purchased", ["No — never used", "Yes"])
@@ -35,7 +35,7 @@ avg_spending = st.selectbox(
     "Average Spending Amount",
     ["<₦2,000", "₦2,000–4,999", "₦5,000–9,999", "₦10,000–19,999", ">₦20,000"]
 )
-
+st.write("Kindly tick appropriately as apllicable to you.")
 #Binary numeric features (Yes=1 / No=0)
 binary_features = {
     'Attractive promos/freebies': st.radio("Attractive promos/freebies", ["Yes", "No"]),
@@ -110,4 +110,5 @@ if st.button("Predict Purchase Likelihood"):
     st.subheader("Prediction Result")
     st.write(f"Purchase Likelihood: **{'Yes' if prediction == 1 else 'No'}**")
     st.write(f"Probability of Purchase: **{probability:.2f}**")
+
 
